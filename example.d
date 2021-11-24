@@ -9,21 +9,23 @@ void main(string[] args)
 
       auto file = File("./text.txt", "r");
 
+      auto rx = regex(r"^([^#]+)\s#\s(.*)$"); 
+
       /*
        * Files tutorial: http://nomad.uk.net/articles/more-hidden-treasure-in-the-d-standard-library.html
        */
-      auto rx = regex(r""); 
+
       foreach (line; file.byLine) {
 
-         foreach (c; matchAll(line, rx)) 
+         foreach (c; matchAll(line, rx)) // matchAll() vs just simply match the regex 
           writeln(c.hit);
       }
 
    } catch ( ErrnoException e) { // FileException is unidentified.
 
-     writeln(e.msg); 
-     writeln(e.file); 
-     writeln(e.line); 
+      writeln(e.msg); 
+      writeln(e.file); 
+      writeln(e.line); 
        
    } finally {
 
