@@ -1,32 +1,51 @@
 #!/usr/bin/env rdmd
+import std.regex;
+import std.stdio;
+
+void splitter_test(in string str, in string regex_)
+{
+  write(`splitter("`, str, `", `, `regex("`, regex_, `") = `);
+
+  auto array = splitter(str, regex(regex_)); 
+
+  writeln(array);
+}
+
+void split_test(in string str, in string regex_)
+{
+  write("split(\"", str, "\", regex(\"", regex_, "\") = ");
+
+  auto array = split(str, regex(regex_)); 
+
+  writeln(array);
+}
 
 void main()
 {
-    import std.regex;
-    import std.stdio;
-    import std.algorithm.comparison : equal;
+//--  splitter_test(", abc, de,  fg, hi, ", ", *");
+//--  splitter_test("Das Endspiel # The Final", r"[^#]+\s#"); 
 
-    //static  auto pattern = ctRegex!(r"^[^#]+\s#\s.*$"); // todo: add flag/modifier meaning non-greedy evaluation 
-    auto pattern = regex(r"^[^#]+\s#\s.*$"); // todo: add flag/modifier meaning non-greedy evaluation 
+  // matchAll() seems to works like preg_match()
 
-    auto str = "Die Endspiel war am Juni 10. 1944 # The final was on June 10th 1944";
-    
-    auto r = splitter(str, pattern); 
+  write(`The output of matchAll("Das Endspiel # The Final", `, `regex("([^#]+)\s#\s(.*)$")`, " is:  ");
 
-    writeln(str.length);    
-    writeln(r.length);    
-    writeln(r);
-    writeln("==================\n");
+  auto x = matchAll("Das Endspiel # The Final, ", r"([^#]+)\s#\s(.*)$"); 
+  writeln(x);
 
-     //static  auto pattern = ctRegex!(r"^[^#]+\s#\s.*$"); // todo: add flag/modifier meaning non-greedy evaluation 
-    auto pattern2 = regex(r"^[^#]+\s#"); // todo: add flag/modifier meaning non-greedy evaluation 
+  writeln("--------------------\n");
 
-    auto str2 = "Die Endspiel war am Juni 10. 1944 # The final was on June 10th 1944";
-    
-    auto r2 = matchFirst(str, pattern2); 
+ /*
+   Or you can use splitter() with a sinlge unique occurance of a regex string like "\s#\s", but
+   if it contains other occurances of the "\s#\s" regex, this will be also split out from the string.
+   Is splitFirst() the solution? 
 
-    writeln(str2.length);    
-    writeln(r2.length);    
-    writeln(r2);
-    
+   TODO:
+   Examine the splitter and split examples at https://dlang.org/phobos/std_regex.html
+  */
+ 
+  splitter_test("Das Endspiel # The Final", r"\s#\s"); 
+
+  splitter_test("Das Endspiel # The Final # remainder of line", r"\s#\s"); 
+
+  split_test("Das Endspiel # The Final # remainder of string", r"\s#\s"); 
 }
