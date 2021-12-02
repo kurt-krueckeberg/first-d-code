@@ -1,60 +1,61 @@
 #!/usr/bin/env rdmd
-import std.regex;
+import std.exception;
 import std.stdio;
+import std.string;
+import std.regex;
+import std.range;
 
-void splitter_test(in string str, in string regex_)
+void write_line(File file, string[] parts)
 {
-  write(`splitter("`, str, `", `, `regex("`, regex_, `") = `);
+// TODO: Finish porting ~/php-util/mk-util writing-of-output method.
+        
+  if (parts[0] == '-') {
+       
+      par = "<p class='new-speaker'>"; 
+      first = substr(parts[0], 2);
 
-  auto array = splitter(str, regex(regex_)); 
+      if ($matches[2][0] == '-') // When the German string starts with a dash followed by a blank ("- "), the English sometimes doesn't so check.
+          $matches[2] = substr($matches[2], 2); 
+      
+  } else 
 
-  writeln(array);
+     par = "<p>";
+   
+  file.write(ofile, par, part1, "</p>", part2, "</p>\n");                
 }
 
-void split_test(in string str, in string regex_)
+void main(string[] args)
 {
-  write("split(\"", str, "\", regex(\"", regex_, "\") = ");
+   if (args.length != 3) {
+      writeln("Enter both the name of input file followed by the name of the output file.");
+      return;
+   }
 
-  auto array = split(str, regex(regex_)); 
+   auto in_file = args[1];
+   
+   auto out_file = args[2];
+   
+   try {
 
-  writeln(array);
-}
+      auto ifile = File(in_file, "r");
+      auto ofile = File(out_file, "w");
 
-void main()
-{
-  auto str1 = "Das Endspiel # The Final";
-  auto regex_str = `([^#]+)\s#\s(.*)$`;
+      static auto pattern = ctRegex!(`\s#\s`);
 
-  auto re = regex(regex_str);
+      foreach (line; ifile.byLine) {
 
-  writeln("matchAll(", str1, "regex(" , regex_str, ") = ", matchAll(str1, re));
-  writeln();
-  writeln("matchFirst(", str1, "regex(" , regex_str, ") = ", matchFirst(str1, re));
-  writeln();
+          auto result = split(line, pattern); 
+          writeln(result);
+      }
 
-  auto str2 = "Das Endspiel # The Final # Third string";
 
-  writeln("matchAll(", str2, "regex(" , regex_str, ") = ", matchAll(str1, re));
-  writeln();
-  writeln("matchFirst(", str2, "regex(" , regex_str, ") = ", matchFirst(str1, re));
-  writeln();
+   } catch ( ErrnoException e) { // FileException is unidentified.
 
-/*
-   Or you can use splitter() with a sinlge unique occurance of a regex string like "\s#\s", but
-   if it contains other occurances of the "\s#\s" regex, this will be also split out from the string.
-   Is splitFirst() the solution? 
+      writeln(e.msg); 
+      writeln(e.file); 
+      writeln(e.line); 
+       
+   } finally {
 
-TODO:
-
-   Examine the splitter and split examples at https://dlang.org/phobos/std_regex.html
-   What is an exmaple of how split and splitter differ, and when you'd prefer split to splitter? 
-*/
- 
-  splitter_test("Das Endspiel # The Final", r"\s#\s"); 
-  writeln();
-
-  splitter_test("Das Endspiel # The Final # remainder of line", r"\s#\s"); 
-  writeln();
-
-  split_test("Das Endspiel # The Final # remainder of string", r"\s#\s"); 
+   }
 }
