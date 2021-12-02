@@ -22,9 +22,18 @@ void split_test(in string str, in string regex_)
 
 void main()
 {
-  auto x = matchAll("Das Endspiel # The Final, ", r"([^#]+)\s#\s(.*)$"); 
+  auto str1 = "Das Endspiel # The Final";
+  auto regex_str = `([^#]+)\s#\s(.*)$`;
 
-  writeln(`matchAll("Das Endspiel # The Final", `, `regex("([^#]+)\s#\s(.*)$")`, " = ", x);
+  auto re = regex(regex_str);
+
+  writeln("matchAll(", str1, "regex(" , regex_str, ") = ", matchAll(str1, re));
+  writeln("matchFirst(", str1, "regex(" , regex_str, ") = ", matchFirst(str1, re));
+  
+  auto str2 = "Das Endspiel # The Final # Third string";
+
+  writeln("matchAll(", str2, "regex(" , regex_str, ") = ", matchAll(str1, re));
+  writeln("matchFirst(", str2, "regex(" , regex_str, ") = ", matchFirst(str1, re));
 
  /*
    Or you can use splitter() with a sinlge unique occurance of a regex string like "\s#\s", but
