@@ -24,6 +24,7 @@ void write_line(File ofile, char[][] parts)
 void main(string[] args)
 {
    if (args.length != 3) {
+
       writeln("Enter the name of input file followed by the name of the output file.");
       return;
    }
