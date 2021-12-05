@@ -2,26 +2,30 @@
 import std.exception;
 import std.stdio;
 import std.string;
+import std.uni;
 import std.regex;
 import std.range;
 
-void write_line(File file, string[] parts)
+/*
+ * Comment In D, type 'char' and type 'string' have default character encodings of UTF-8. 
+ */
+
+void write_line(File ofile, string[] parts)
 {
-// TODO: Finish porting ~/php-util/mk-util writing-of-output method.
-        
-  if (parts[0] == '-') {
-       
+  string par = "<p>";
+
+  if (parts[0][0] == '-') {
+
+      // TODO: Q: Do I want to use the hardcoed value of 2? Maybe I should look at: compPrefix(parts[0], "- ");
       par = "<p class='new-speaker'>"; 
-      first = substr(parts[0], 2);
 
-      if ($matches[2][0] == '-') // When the German string starts with a dash followed by a blank ("- "), the English sometimes doesn't so check.
-          $matches[2] = substr($matches[2], 2); 
-      
-  } else 
+      parts[0] = parts[0][2 .. $]; //   German subtitle. 
 
-     par = "<p>";
+      if (parts[1][0] == '-') // Does the English translation of the German subtitle aslo start with a dash followed by a blank ("- ")? Sometimes its doesn't, so we check.
+         parts[1] = parts[1][2 .. $]; 
+  } 
    
-  file.write(ofile, par, part1, "</p>", part2, "</p>\n");                
+  ofile.write(par, parts[0], "</p>", parts[1], "</p>\n");                
 }
 
 void main(string[] args)
@@ -30,17 +34,13 @@ void main(string[] args)
       writeln("Enter both the name of input file followed by the name of the output file.");
       return;
    }
-
-   auto in_file = args[1];
-   
-   auto out_file = args[2];
    
    try {
 
-      auto ifile = File(in_file, "r");
-      auto ofile = File(out_file, "w");
+      auto ifile = File(args[1], "r");
+      auto ofile = File(args[2], "w");
 
-      static auto pattern = ctRegex!(`\s#\s`);
+      static auto pattern = ctRegex!(`\s#\s`); // Do compile-time regular expression Regex object creation. 
 
       foreach (line; ifile.byLine) {
 
