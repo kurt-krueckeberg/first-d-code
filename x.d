@@ -10,7 +10,6 @@ import std.range;
  * Comment In D, type 'char' and type 'string' have default character encodings of UTF-8. 
  */
 
-//void write_line(File ofile, string[] parts)
 void write_line(File ofile, char[][] parts)
 {
   string par = "<p>";
