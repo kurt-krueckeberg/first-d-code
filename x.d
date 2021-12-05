@@ -10,7 +10,8 @@ import std.range;
  * Comment In D, type 'char' and type 'string' have default character encodings of UTF-8. 
  */
 
-void write_line(File ofile, string[] parts)
+//void write_line(File ofile, string[] parts)
+void write_line(File ofile, char[][] parts)
 {
   string par = "<p>";
 
@@ -31,7 +32,7 @@ void write_line(File ofile, string[] parts)
 void main(string[] args)
 {
    if (args.length != 3) {
-      writeln("Enter both the name of input file followed by the name of the output file.");
+      writeln("Enter the name of input file followed by the name of the output file.");
       return;
    }
    
@@ -45,7 +46,7 @@ void main(string[] args)
       foreach (line; ifile.byLine) {
 
           auto result = split(line, pattern); 
-          writeln(result);
+          write_line(ofile, result);
       }
 
 
